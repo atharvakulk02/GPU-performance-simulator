@@ -3,6 +3,7 @@
 #include <string>
 #include <vector>
 #include "Instruction.h"
+#include "Cache.h"
 
 enum class WarpState { READY, MEM_STALL, EXEC_STALL, FINISHED };
 
@@ -46,15 +47,25 @@ struct Warp {
         }
     }
 
-    int issue() {
+    int issue(Cache& l1, Cache& l2) {
         int latency = 1;
         Instruction instr = instructions[pc];
         pc++;
         instructions_issued++;
         if (instr.type == InstrType::MEM) {
-            latency = 100;
+            if (l1.access(instr.address)){
+                latency=4;
+            }
+            else{
+                if(l2.access(instr.address)){
+                    latency=30;
+                }
+                else{
+                    latency=200;
+                }
+            }
             state = WarpState::MEM_STALL;
-            stall_cycles_remaining = 100;
+            stall_cycles_remaining = latency;
         }
         return latency;
     }

@@ -8,16 +8,20 @@ int main() {
         Instruction{InstrType::ALU, 0},
         Instruction{InstrType::ALU, 0},
         Instruction{InstrType::MEM, 0x1000},
-        Instruction{InstrType::ALU, 0},
+        Instruction{InstrType::MEM, 0x1000},
         Instruction{InstrType::ALU, 0}
     };
+    
+
+    Cache l1(64, 4, 32);
+    Cache l2(256, 8, 64);
 
     Warp w(0, instrs);
 
     while (!w.is_finished()) {
         w.tick();
         if (w.is_ready()) {
-            w.issue();
+            w.issue(l1,l2);
         }
     }
 
