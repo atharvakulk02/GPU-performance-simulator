@@ -1,5 +1,6 @@
 #include "Warp.h"
 #include "Cache.h"
+#include "SM.h"
 #include <iostream>
 
 int main() {
@@ -16,18 +17,15 @@ int main() {
     Cache l1(64, 4, 32);
     Cache l2(256, 8, 64);
 
-    Warp w(0, instrs);
+    std::vector<Warp> warps = {
+        Warp(0,instrs),
+        Warp(1,instrs),
+        Warp(2,instrs),
+        Warp(3,instrs)
+    };
 
-    while (!w.is_finished()) {
-        w.tick();
-        if (w.is_ready()) {
-            w.issue(l1,l2);
-        }
-    }
-
-    std::cout << "Instructions issued: " << w.instructions_issued << "\n";
-    std::cout << "Cycles ready      : " << w.cycles_ready << "\n";
-    std::cout << "Cycles stalled    : " << w.cycles_stalled << "\n";
-
+    SM sm(warps,l1,l2);
+    sm.run();
+    sm.print_stats();
     return 0;
 }
