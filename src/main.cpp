@@ -12,6 +12,30 @@ int main() {
         Instruction{InstrType::MEM, 0x1000},
         Instruction{InstrType::ALU, 0}
     };
+    std::vector<Instruction> instrs2 = {
+        Instruction{InstrType::ALU, 0},
+        Instruction{InstrType::ALU, 0},
+        Instruction{InstrType::ALU, 0},
+        Instruction{InstrType::MEM, 0x2000},
+        Instruction{InstrType::MEM, 0x2000},
+        Instruction{InstrType::ALU, 0}
+    };
+    std::vector<Instruction> instrs3 = {
+        Instruction{InstrType::ALU, 0},
+        Instruction{InstrType::ALU, 0},
+        Instruction{InstrType::ALU, 0},
+        Instruction{InstrType::MEM, 0x3000},
+        Instruction{InstrType::MEM, 0x3000},
+        Instruction{InstrType::ALU, 0}
+    };
+    std::vector<Instruction> instrs4 = {
+        Instruction{InstrType::ALU, 0},
+        Instruction{InstrType::ALU, 0},
+        Instruction{InstrType::ALU, 0},
+        Instruction{InstrType::MEM, 0x4000},
+        Instruction{InstrType::MEM, 0x4000},
+        Instruction{InstrType::ALU, 0}
+    };
     
 
     Cache l1(64, 4, 32);
@@ -19,9 +43,9 @@ int main() {
 
     std::vector<Warp> warps = {
         Warp(0,instrs),
-        Warp(1,instrs),
-        Warp(2,instrs),
-        Warp(3,instrs)
+        Warp(1,instrs2),
+        Warp(2,instrs3),
+        Warp(3,instrs4)
     };
 
     SM sm(warps,l1,l2);
