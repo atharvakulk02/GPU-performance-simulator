@@ -26,7 +26,7 @@ void run(){
         }
         for(auto& w : warps){
             if(w.is_ready()){
-                w.issue(l1,l2);
+                w.issue(l1,l2,cycles);
                 break;
             }
             

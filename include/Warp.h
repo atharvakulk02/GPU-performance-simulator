@@ -47,17 +47,17 @@ struct Warp {
         }
     }
 
-    int issue(Cache& l1, Cache& l2) {
+    int issue(Cache& l1, Cache& l2,uint64_t time) {
         int latency = 1;
         Instruction instr = instructions[pc];
         pc++;
         instructions_issued++;
         if (instr.type == InstrType::MEM) {
-            if (l1.access(instr.address)){
+            if (l1.access(instr.address,time)){
                 latency=4;
             }
             else{
-                if(l2.access(instr.address)){
+                if(l2.access(instr.address,time)){
                     latency=30;
                 }
                 else{
