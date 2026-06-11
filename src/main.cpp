@@ -48,7 +48,7 @@ int main() {
         Warp(3,instrs4)
     };
 
-    SM sm(warps,l1,l2);
+    SM sm(warps,l1,l2,64,32,8192,65536,49152,256);
     sm.run();
     sm.print_stats();
     return 0;
