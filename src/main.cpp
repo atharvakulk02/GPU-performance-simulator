@@ -4,49 +4,24 @@
 #include <iostream>
 
 int main() {
-    std::vector<Instruction> instrs = {
-        Instruction{InstrType::ALU, 0},
-        Instruction{InstrType::ALU, 0},
-        Instruction{InstrType::ALU, 0},
-        Instruction{InstrType::MEM, 0x1000},
-        Instruction{InstrType::MEM, 0x1000},
-        Instruction{InstrType::ALU, 0}
-    };
-    std::vector<Instruction> instrs2 = {
-        Instruction{InstrType::ALU, 0},
-        Instruction{InstrType::ALU, 0},
-        Instruction{InstrType::ALU, 0},
-        Instruction{InstrType::MEM, 0x2000},
-        Instruction{InstrType::MEM, 0x2000},
-        Instruction{InstrType::ALU, 0}
-    };
-    std::vector<Instruction> instrs3 = {
-        Instruction{InstrType::ALU, 0},
-        Instruction{InstrType::ALU, 0},
-        Instruction{InstrType::ALU, 0},
-        Instruction{InstrType::MEM, 0x3000},
-        Instruction{InstrType::MEM, 0x3000},
-        Instruction{InstrType::ALU, 0}
-    };
-    std::vector<Instruction> instrs4 = {
-        Instruction{InstrType::ALU, 0},
-        Instruction{InstrType::ALU, 0},
-        Instruction{InstrType::ALU, 0},
-        Instruction{InstrType::MEM, 0x4000},
-        Instruction{InstrType::MEM, 0x4000},
-        Instruction{InstrType::ALU, 0}
-    };
-    
+    int N=1024;
+    int TILE_SIZE=16;
+    int num_warps=16;
+    std::vector<Warp> warps;
+    for (int i=0;i<num_warps;i++){
+        std::vector<Instruction> instrs;
+        for(int t=0;(t<N/TILE_SIZE);t++){
+            instrs.push_back(Instruction{InstrType::MEM, (uint64_t)(i*TILE_SIZE*N*4)+(t*TILE_SIZE*4)});
+            instrs.push_back(Instruction{InstrType::MEM, (uint64_t)(i*TILE_SIZE*4)+(t*TILE_SIZE*4*N)});
+            for (int z=0;z<TILE_SIZE;z++){
+                instrs.push_back(Instruction{InstrType::ALU, 0});
+            }
+        }
+        warps.push_back(Warp(i,instrs));
+    }
 
     Cache l1(64, 4, 32);
     Cache l2(256, 8, 64);
-
-    std::vector<Warp> warps = {
-        Warp(0,instrs),
-        Warp(1,instrs2),
-        Warp(2,instrs3),
-        Warp(3,instrs4)
-    };
 
     SM sm(warps,l1,l2,64,32,8192,65536,49152,256);
     sm.run();

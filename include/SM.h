@@ -3,6 +3,7 @@
 #include "Cache.h"
 #include <vector>
 #include <iostream>
+#include <algorithm>
 
 struct SM {
     std::vector<Warp> warps;
@@ -33,10 +34,11 @@ threads_per_block(threads_per_block)
 void run(){
     while (!(all_finished())){
         cycles++;
-        for(int i=0;i<compute_max_active_warps();i++){    
+        int active = std::min((int)warps.size(), compute_max_active_warps());
+        for(int i=0;i<active;i++){    
             warps[i].tick();
         }
-        for(int i=0;i<compute_max_active_warps();i++){
+        for(int i=0;i<active;i++){
             if(warps[i].is_ready()){
                 warps[i].issue(l1,l2,cycles);
                 break;
