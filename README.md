@@ -56,7 +56,6 @@ CUDA kernel on a Tesla T4 GPU and collecting hardware counters via Nsight Comput
 | L1 hit rate | 6.13% | 6.59% |
 | L2 hit rate | 80.49% | 3.14% |
 | Active warps | 31.58 | 48 (occupancy limit) |
-| SM throughput | 74.52% | — |
 
 ## Key Findings
 
