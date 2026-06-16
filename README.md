@@ -9,18 +9,18 @@ against real hardware counters collected on an NVIDIA Tesla T4 via Nsight Comput
 
 The simulator is built around three core components:
 
-**Warp** — a group of 32 threads that execute in lockstep. Each warp maintains
+**Warp** : a group of 32 threads that execute in lockstep. Each warp maintains
 its own instruction trace, program counter, and stall state. When a warp issues
 a memory instruction, it stalls until the cache hierarchy resolves the request.
 While it waits, other warps can issue instructions, hiding the latency.
 
-**Cache** — a two-level hierarchy (L1 and L2) with configurable sets,
+**Cache** : a two-level hierarchy (L1 and L2) with configurable sets,
 associativity, and block size. Each cache uses LRU eviction to decide which
 block to replace on a miss. Addresses are decoded into tag and set index using
 bit manipulation. On a miss, the hierarchy falls back to a DRAM model with a
 200-cycle penalty.
 
-**SM (Streaming Multiprocessor)** — owns the warps and both caches, and runs
+**SM (Streaming Multiprocessor)** : owns the warps and both caches, and runs
 the cycle loop. Each cycle it ticks all active warps to decrement stall counters,
 then selects the first ready warp to issue an instruction. The number of active
 warps is capped by an occupancy model that accounts for register file pressure
@@ -61,11 +61,11 @@ CUDA kernel on a Tesla T4 GPU and collecting hardware counters via Nsight Comput
 
 **L1 hit rate matched closely (6.13% vs 6.59%).** The simulator accurately
 captures the low L1 reuse behavior of tiled matrix multiply's global memory
-accesses — each tile element is loaded once from global memory, so L1 provides
+accesses. Each tile element is loaded once from global memory, so L1 provides
 little benefit at this level.
 
 **L2 hit rate diverged significantly (80.49% vs 3.14%).** The real T4 achieves
-high L2 utilization through hardware prefetching — the memory controller detects
+high L2 utilization through hardware prefetching. The memory controller detects
 sequential access patterns and pulls data into L2 ahead of time. The simulator
 has no prefetcher, so most misses fall through to DRAM. This is the single
 biggest gap between the model and real hardware.
